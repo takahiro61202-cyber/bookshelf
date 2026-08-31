@@ -20,9 +20,11 @@ Route::get('/', function () {
 
 Route::get('/', [Controller::class, 'index'])->name('books.index');
 
-Route::get('/books/{books}', [Controller::class, 'form']);
+Route::get('/books/create', [Controller::class, 'books_create'])->name('books.create');
 
-Route::get('/books/create', [Controller::class, 'create'])->name('books.create');
+Route::get('/books/{book}', [Controller::class, 'books_show'])->name('books.show');
+
+Route::get('/books/{book}/edit', [Controller::class, 'books_edit'])->name('books.edit');
 
 Route::get('/ranking', [Controller::class, 'ranking'])->name('ranking.index');
 
@@ -37,6 +39,15 @@ Route::get('/genres/create', [Controller::class, 'genres_create'])->name('genres
 // ジャンル保存（store）
 Route::post('/genres', [Controller::class, 'genres_store'])->name('genres.store');
 
+// ジャンル更新処理
+Route::put('/genres/{genre}', [Controller::class, 'genres_update'])->name('genres.update');
+
+// ジャンル削除
+Route::delete('/genres/{genre}', [Controller::class, 'genres_destroy'])->name('genres.destroy');
+
+// ジャンル編集画面
+Route::get('/genres/{genre}/edit', [Controller::class, 'genres_edit'])->name('genres.edit');
+
 // ジャンル詳細
 Route::get('/genres/{genre}', [Controller::class, 'genres_show'])->name('genres.show');
 
@@ -45,5 +56,8 @@ Route::get('/genres/{genre}', [Controller::class, 'genres_show'])->name('genres.
 // Route::get('/login}', [Controller::class, 'login'])->name('login');
 
 //  Route::get('/register', [Controller::class, 'register'])->name('register');
+
+Route::redirect('/home', '/');
+
 
 

@@ -13,14 +13,18 @@ return new class extends Migration
     {
         Schema::create('books', function (Blueprint $table) {
             $table->id();
-            $table->string('book_name',255);
+            $table->string('user_id',255);
+            $table->string('title',255);
             $table->string('author',255);
-            $table->string('isbn',13);//バリデーションで数字のみ許可にする予定
+            $table->string('isbn',13)->unique();//バリデーションで数字のみ許可にする予定
             $table->date('publication_date');
-            $table->string('genre',255);
-            $table->string('explanation',255);
+            $table->string('description',255)->nullable();
+            $table->decimal('favorite_ave',3,2)->nullable();
+            $table->string('image_url',255)->nullable();
             $table->timestamps();
         });
+
+
     }
 
     /**

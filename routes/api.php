@@ -36,8 +36,8 @@ use App\Http\Controllers\Api\V1\V1;
 
 
 // 仮作成
-Route::post('/login', [V1::class, 'login'])->name('login');
+// Route::post('/login', [V1::class, 'login'])->name('login');
 
-Route::get('/register', [V1::class, 'register'])->name('register');
-Route::post('/register', [V1::class, 'register'])->name('register');
+// Route::get('/register', [V1::class, 'register'])->name('register');
+// Route::post('/register', [V1::class, 'register'])->name('register');
 
