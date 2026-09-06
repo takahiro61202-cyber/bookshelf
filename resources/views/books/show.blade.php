@@ -103,7 +103,9 @@
                             <div class="mb-6 bg-gray-50 p-4 rounded-lg">
                                 <h3 class="font-semibold mb-3">レビューを投稿</h3>
                                 <form action="{{ route('reviews.store', $book) }}" method="POST" novalidate>
-                                    @csrf
+    @csrf
+<!-- 追加しました -->
+    <input type="hidden" name="book_id" value="{{ $book->id }}">
                                     <div class="mb-4">
                                         <label for="rating" class="block text-sm font-medium text-gray-700 mb-1">評価</label>
                                         <select name="rating" id="rating" class="border-gray-300 rounded-md shadow-sm">

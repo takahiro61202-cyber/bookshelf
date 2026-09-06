@@ -19,10 +19,10 @@ class Book extends Model
         'image',
     ];
 
-    public function favoritedBy()
-    {
-        return $this->belongsToMany(User::class, 'favorites');
-    }
+public function favoritedBy()
+{
+    return $this->belongsToMany(User::class, 'favorites', 'book_id', 'user_id');
+}
 
     
 

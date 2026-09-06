@@ -8,20 +8,22 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use App\Models\Book;
 use App\Models\Genre;
+use App\Models\Review;
+use Illuminate\Support\Facades\Auth;
 
 class Controller extends BaseController
 {
+// 本関係
     public function index()
     {
     $books = Book::paginate(10); 
         return view('books.index',compact('books'));
     }
 
-        public function books_show(Book $book)
-    {
-        $books = collect();
-        return view('books.show',compact('book'));
-    }
+public function books_show(Book $book)
+{
+    return view('books.show', compact('book'));
+}
 
     public function books_create()
     {
@@ -34,19 +36,35 @@ class Controller extends BaseController
         $genres = Genre::all();
         return view('books.create',compact('books'));
     }
-
+// ランキング関係
     public function ranking()
     {
         $rankedBooks = collect();
         return view('ranking.index',compact('rankedBooks'));
     }
+// お気に入り関係
+public function favorites()
+{
+    $user = Auth::user();
 
-    public function favorites()
-    {
-        $books = collect();
-        return view('favorites.index',compact('books'));
+    $books = $user->favoriteBooks()->paginate(10);
+
+    return view('favorites.index', compact('books'));
+}
+
+    public function toggle(Book $book)
+{
+    $user = Auth::user();
+
+    if ($user->favoriteBooks()->where('book_id', $book->id)->exists()) {
+        $user->favoriteBooks()->detach($book->id);
+    } else {
+        $user->favoriteBooks()->attach($book->id);
     }
 
+    return back(); // ← ページ移動しない（元のページに戻る）
+}
+// ジャンル関係
     public function genres()
     {
     $genres = Genre::withCount('books')->get();
@@ -102,6 +120,43 @@ class Controller extends BaseController
             $books = $genre->books()->paginate(10);
         return view('genres.show', compact('genre','books'));
     }
+    // review関連
+
+
+
+    
+public function reviewStore(Request $request)
+{
+    $validated = $request->validate([
+        'comment' => 'required|string',
+        'rating' => 'required|integer|min:1|max:5',
+        'book_id' => 'required|exists:books,id',
+    ]);
+
+    Review::create([
+        'comment' => $validated['comment'],
+        'rating' => $validated['rating'],
+        'book_id' => $validated['book_id'],
+        'user_id' => Auth::id(),
+    ]);
+
+    return back()->with('success', 'レビューを投稿しました');
+}
+// レビュー参考ボタン
+public function like(Review $review)
+{
+    $user = Auth::user();
+
+    if ($user->likedReviews()->where('review_id', $review->id)->exists()) {
+        $user->likedReviews()->detach($review->id);
+    } else {
+        $user->likedReviews()->attach($review->id);
+    }
+
+    return back();
+}
+
+
 
 
 

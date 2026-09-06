@@ -27,8 +27,11 @@ Route::get('/books/{book}', [Controller::class, 'books_show'])->name('books.show
 Route::get('/books/{book}/edit', [Controller::class, 'books_edit'])->name('books.edit');
 
 Route::get('/ranking', [Controller::class, 'ranking'])->name('ranking.index');
-
+// お気に入り一覧
 Route::get('/favorites', [Controller::class, 'favorites'])->name('favorites.index');
+
+// お気に入り登録機能
+Route::post('/favorites/toggle/{book}', [Controller::class, 'toggle'])->name('favorites.toggle');
 
 // ジャンル一覧
 Route::get('/genres', [Controller::class, 'genres'])->name('genres.index');
@@ -51,6 +54,11 @@ Route::get('/genres/{genre}/edit', [Controller::class, 'genres_edit'])->name('ge
 // ジャンル詳細
 Route::get('/genres/{genre}', [Controller::class, 'genres_show'])->name('genres.show');
 
+// review
+Route::post('/reviews', [Controller::class, 'reviewStore'])->name('reviews.store');
+
+// レビュー参考ボタン
+Route::post('/reviews/{review}/like', [Controller::class, 'like'])->name('reviews.like');
 
 // ページ内容確認用(使用後消去)
 // Route::get('/login}', [Controller::class, 'login'])->name('login');
