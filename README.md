@@ -31,7 +31,7 @@ docker run --rm -u "$(id -u):$(id -g)" -v "$(pwd):/var/www/html" -w /var/www/htm
 ./vendor/bin/sail up -d
 ```
 
-### 2 envファイルとアプリキーを作成してください
+### 3 envファイルとアプリキーを作成してください
 
 ```bash
 cp .env.example .env
@@ -41,7 +41,7 @@ cp .env.example .env
 sail artisan key:generate
 ```
 
-### 5 envファイルの下記の欄を確認してください
+### 4 envファイルの下記の欄を確認してください
 
 ```bash
 DB_CONNECTION=mysql
@@ -53,7 +53,7 @@ DB_PASSWORD=password
 
 ```
 
-### 6 Alpine.jsのインストール
+### 5 Alpine.jsのインストール
 
 ```bash
 sail npm install alpinejs
@@ -62,17 +62,17 @@ sail npm install alpinejs
 NPM依存パッケージのインストール
 sail npm install
 
-### 7 Vite開発サーバーの起動
+### 6 Vite開発サーバーの起動
 
 sail npm run dev
 
-### 6 マイグレーションを実施してください
+### 7 マイグレーションを実施してください
 
 ```bash
 ./vendor/bin/sail artisan migrate
 ```
 
-### 7 シーディング実施してください
+### 8 シーディング実施してください
 
 ```bash
 ./vendor/bin/sail artisan db:seed
