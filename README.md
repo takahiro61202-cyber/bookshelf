@@ -12,65 +12,70 @@
 
 今回はテストなので個人のリポジトリのurlを変更してください
 
-````bash
+```bash
 git clone https://github.com/takahiro61202-cyber/bookshelf.git
-
-### 2 Dockerのコンテナを作成します
-
-```bash
-docker-compose up -d --build
-````
-
-### 3 phpコンテナにログインしてコンポーザーをインストールしてください
-
-```bash
-docker-compose exec php bash
-composer install
 ```
 
-### 4 envファイルとアプリキーを作成してください
+```bash
+cd bookshelf
+```
+
+### 2 Laravel Sailのインストール
+
+```bash
+docker run --rm -u "$(id -u):$(id -g)" -v "$(pwd):/var/www/html" -w /var/www/html -e COMPOSER_CACHE_DIR=/tmp/composer_cache laravelsail/php82-composer:latest composer require laravel/sail --dev
+
+```
+
+```bash
+./vendor/bin/sail up -d
+```
+
+### 2 envファイルとアプリキーを作成してください
 
 ```bash
 cp .env.example .env
 ```
 
 ```bash
-php artisan key:generate
+sail artisan key:generate
 ```
 
-### 5 envファイルの下記の欄を修正してください
+### 5 envファイルの下記の欄を確認してください
 
 ```bash
 DB_CONNECTION=mysql
-# before
-DB_HOST=127.0.0.1
-DB_DATABASE=laravel
-DB_USERNAME=root
-DB_PASSWORD=
-# after
 DB_HOST=mysql
-DB_DATABASE=laravel_db
-DB_USERNAME=laravel_user
-DB_PASSWORD=laravel_pass
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=sail
+DB_PASSWORD=password
+
 ```
+
+### 6 Alpine.jsのインストール
+
+```bash
+sail npm install alpinejs
+```
+
+NPM依存パッケージのインストール
+sail npm install
+
+### 7 Vite開発サーバーの起動
+
+sail npm run dev
 
 ### 6 マイグレーションを実施してください
 
 ```bash
-php artisan migrate
-```
-
-ここでデーターベースに作成されているか確認することをおすすめします
-エラーが発生する場合は以下のコマンドを試してください
-
-```bash
-sudo chmod -R 777 *
+./vendor/bin/sail artisan migrate
 ```
 
 ### 7 シーディング実施してください
 
 ```bash
-php artisan db:seed
+./vendor/bin/sail artisan db:seed
 ```
 
 ## 使用技術(実装環境)
@@ -83,7 +88,7 @@ php artisan db:seed
 
 ## ER図
 
-![alt text](ER2.png)
+![alt text](ER.png)
 
 ## URL
 
