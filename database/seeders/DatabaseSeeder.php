@@ -18,8 +18,6 @@ $this->call([
     GenresTableSeeder::class,
     BooksTableSeeder::class,
     ReviewsTableSeeder::class,
-    FavoritesTableSeeder::class,
-    ReviewLikesTableSeeder::class,
 ]);
 }
 
