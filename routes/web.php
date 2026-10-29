@@ -21,6 +21,7 @@ Route::get('/', function () {
 Route::get('/', [Controller::class, 'index'])->name('books.index');
 
 Route::get('/books/create', [Controller::class, 'books_create'])->name('books.create');
+Route::post('/books', [Controller::class, 'books_store'])->name('books.store');
 
 Route::get('/books/{book}', [Controller::class, 'books_show'])->name('books.show');
 

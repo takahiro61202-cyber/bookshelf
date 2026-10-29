@@ -10,13 +10,14 @@ class Book extends Model
     use HasFactory;
 
      protected $fillable = [
+        'user_id',
         'title',
         'author',
         'isbn',
         'publication_date',
-        'explanation',
+        'description',
         'favorite_ave',
-        'image',
+        'image_url',
     ];
 
 public function favoritedBy()

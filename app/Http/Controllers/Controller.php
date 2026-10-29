@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use App\Models\Book;
 use App\Models\Genre;
 use App\Models\Review;
+use App\Http\Requests\StoreBookRequest;
+use App\Http\Requests\StoreGenreRequest;
 use Illuminate\Support\Facades\Auth;
 
 class Controller extends BaseController
@@ -25,26 +27,55 @@ public function books_show(Book $book)
     return view('books.show', compact('book'));
 }
 
-    public function books_create()
-    {
-        $genres = collect();
-        return view('books._form',compact('genres'));
-    }
+// 書籍登録画面
+public function books_create()
+{
+        if (!Auth::check()) {
+    return redirect()->route('login');
+}
+    $genres = Genre::all();
 
-    public function create()
-    {
-        $genres = Genre::all();
-        return view('books.create',compact('books'));
-    }
+    return view('books.create', compact('genres'));
+}
+
+public function books_store(StoreBookRequest $request)
+{
+    $book = Book::create([
+        'user_id' => Auth::id(),
+        'title' => $request->title,
+        'author' => $request->author,
+        'isbn' => $request->isbn,
+        'publication_date' => $request->published_date,
+        'description' => $request->description,
+        'image_url' => $request->image_url,
+    ]);
+
+    $book->genres()->sync($request->genres ?? []);
+
+    return redirect()->route('books.index')->with('success', '書籍を登録しました');
+}
+
+
+
+
 // ランキング関係
     public function ranking()
     {
-        $rankedBooks = collect();
+        $rankedBooks = Book::withAvg('reviews', 'rating')
+        ->withCount('reviews')
+        ->orderByDesc('reviews_avg_rating')
+        ->get();
+
+
+
         return view('ranking.index',compact('rankedBooks'));
     }
 // お気に入り関係
 public function favorites()
 {
+    if (!Auth::check()) {
+    return redirect()->route('login');
+}
     $user = Auth::user();
 
     $books = $user->favoriteBooks()->paginate(10);
@@ -67,6 +98,9 @@ public function favorites()
 // ジャンル関係
     public function genres()
     {
+        if (!Auth::check()) {
+    return redirect()->route('login');
+}
     $genres = Genre::withCount('books')->get();
     return view('genres.index', compact('genres'));
     }
@@ -76,25 +110,15 @@ public function favorites()
     return view('genres.create');
     }
 
-    public function genres_store(Request $request)
+    public function genres_store(StoreGenreRequest $request)
     {
-        $validated = $request->validate([
-        'name' => 'required|string|max:255',
-    ]);
-
-    
-
-    Genre::create($validated);
+    Genre::create($request->validated());
 
     return redirect()->route('genres.create')->with('success', 'ジャンルを登録しました');
     }
 
-    public function genres_update(Request $request, Genre $genre)
+    public function genres_update(UpdateGenreRequest $request, Genre $genre)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
-
         $genre->update($validated);
 
         return redirect()->route('genres.index');
@@ -125,13 +149,8 @@ public function favorites()
 
 
     
-public function reviewStore(Request $request)
+public function reviewStore(StoreReviewRequest $request)
 {
-    $validated = $request->validate([
-        'comment' => 'required|string',
-        'rating' => 'required|integer|min:1|max:5',
-        'book_id' => 'required|exists:books,id',
-    ]);
 
     Review::create([
         'comment' => $validated['comment'],
